@@ -88,7 +88,7 @@ def generateBasedOnMaxPay(tasks: list[Task], worker_count: int, deadline: int):
     <deadline - time - 1, deadline - 1> and so on.
     '''
 
-    tasks.sort(key=lambda x: x.profit/x.time)
+    tasks.sort(key=lambda x: x.profit/x.time, reverse=True)
 
     problem = Problem(tasks, worker_count, deadline)
     matrix = problem.solution_matrix
@@ -161,7 +161,7 @@ def checkSolution(problem: Problem):
                 i += j
 
             i += 1
-            
+
     return True
 
 def saveTasks(filename: str, tasks: list[Task]) -> None:
