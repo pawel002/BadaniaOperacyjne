@@ -9,7 +9,7 @@ class Task:
         self.profit = profit
 
     def __repr__(self) -> str:
-        return f"D={self.deadline}, T={self.time}, P={self.profit:.2f}"
+        return f"|{self.deadline}, {self.time}, {self.profit:.2f}|"
 
 class Problem:
     def __init__(self, tasks: list[Task], worker_count: int, deadline: int) -> None:
@@ -23,7 +23,7 @@ class Problem:
     def __repr__(self) -> str:
         rep = f"{self.worker_count} workers \n {self.dealine} absolute dealine \n {len(tasks)} tasks \n"
         for task in tasks:
-            rep += f"{{{task.deadline}, {task.time}, {task.profit:.2f}}}, "
+            rep += f"{str(task)}, "
         return rep
     
 def generateTasks(count:int, work_dealine: int, maxprofit: int | float) -> list[Task]:
@@ -119,7 +119,7 @@ def generateBasedOnMaxPay(tasks: list[Task], worker_count: int, deadline: int):
             
             if break_worker:
                 break
-
+    
     return problem
 
 def checkSolution(problem: Problem):
@@ -127,6 +127,7 @@ def checkSolution(problem: Problem):
     # check if the task is assigned only once
     for i in range(len(problem.tasks)):
         if not 0 <= np.sum(problem.solution_matrix[:, i, :]) <= 1:
+            print("Failed at: Check 1")
             return False
         
     # check if the the task is assigned before its deadline
@@ -136,7 +137,8 @@ def checkSolution(problem: Problem):
             idx = np.where(problem.solution_matrix[j, i] == 1)
             if len(idx[0]) >= 1:
                 time_start = idx[0][0]
-                if time_start + tasks[i].time > tasks[i].deadline:
+                if time_start + problem.tasks[i].time > problem.tasks[i].deadline:
+                    print("Failed at: Check 2")
                     return False
                 
     # for each worker check if any tasks overlap
@@ -154,6 +156,7 @@ def checkSolution(problem: Problem):
                 j = 1
                 while j < execution_time:
                     if np.sum(helper_matrix[i + j]) >= 1:
+                        print("Failed at: Check 3")
                         return False
                     
                     j += 1
@@ -166,14 +169,31 @@ def checkSolution(problem: Problem):
 
 def saveTasks(filename: str, tasks: list[Task]) -> None:
     file = open(filename, 'w')
-    file.write('\n'.join([str(t) for t in tasks]))
+    file.write('\n'.join([str(t).replace(",", "").replace("|", "") for t in tasks]))
     file.close()
 
+def loadTasks(filename: str) -> list[Task]:
+    file = open(filename, 'r')
+    tasks = []
+    for line in file.readlines():
+        parsed = list(map(float, line.split(" ")))
+        tasks.append(Task(int(parsed[0]), int(parsed[1]), parsed[2]))
+
+    return tasks
 
 if __name__ == '__main__':
     random.seed(42)
-    
-    tasks = generateTasks(5, 5, 10)
-    problem = generateBasedOnMaxPay(tasks, 2, 5)
+    test_directory = "tests/"
+
+    day_deadline = 10
+    workers = 5
+    tasks = generateTasks(20, day_deadline, 10)
+
+    problem = generateBasedOnMaxPay(copy.deepcopy(tasks), workers, day_deadline)
     print(checkSolution(problem))
+    print(problem.profit)
+
+    problem = generateRandom(copy.deepcopy(tasks), workers, day_deadline, 10)
+    print(checkSolution(problem))
+    print(problem.profit)
 
