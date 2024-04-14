@@ -172,6 +172,7 @@ def saveTasks(filename: str, tasks: list[Task]) -> None:
 
 if __name__ == '__main__':
     random.seed(42)
+    
     tasks = generateTasks(5, 5, 10)
     problem = generateBasedOnMaxPay(tasks, 2, 5)
     print(checkSolution(problem))
