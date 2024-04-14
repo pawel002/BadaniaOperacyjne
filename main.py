@@ -81,7 +81,7 @@ def generateRandom(tasks: list[Task], worker_count: int, deadline: int, worker_t
     
     return problem
 
-def generateBasedOnMaxPay(tasks: list[Task], worker_count: int, deadline: int):
+def generateBasedPPT(tasks: list[Task], worker_count: int, deadline: int):
     '''
     First sort the tasks using ``task.pay / task.time`` metric. After that iterate over tasks and
     try to fit the task to any worker starting from <dealine - time, deadline> and going down to
@@ -183,11 +183,15 @@ def loadTasks(filename: str) -> list[Task]:
 
 if __name__ == '__main__':
     random.seed(42)
+    np.random.seed(42)
+
     test_directory = "tests/"
 
-    day_deadline = 10
-    workers = 5
-    tasks = generateTasks(20, day_deadline, 10)
+    day_deadline = 20
+    workers = 10
+    task_count = 100
+
+    tasks = generateTasks(task_count, day_deadline, 10)
 
     problem = generateBasedOnMaxPay(copy.deepcopy(tasks), workers, day_deadline)
     print(checkSolution(problem))
