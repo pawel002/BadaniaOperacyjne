@@ -18,11 +18,12 @@ class Problem:
         self.deadline = deadline
         self.used_problems = [False for _ in range(len(tasks))]
         self.solution_matrix = np.zeros((worker_count, len(tasks), deadline))
+        self.assigned_tasks =[[] for _ in range(worker_count)]
         self.profit = 0
 
     def __repr__(self) -> str:
-        rep = f"{self.worker_count} workers \n {self.dealine} absolute dealine \n {len(tasks)} tasks \n"
-        for task in tasks:
+        rep = f"{self.worker_count} workers \n {self.dealine} absolute dealine \n {len(self.tasks)} tasks \n"
+        for task in self.tasks:
             rep += f"{str(task)}, "
         return rep
     
@@ -35,6 +36,61 @@ def generateTasks(count:int, work_dealine: int, maxprofit: int | float) -> list[
 
     return tasks
 
+def evolveProblem(problem : Problem):   
+
+    reduced_tasks = []
+
+    for worker in range(problem.worker_count):
+        roll = random.random()
+
+        if roll >= 0.5:
+            tasks = problem.assigned_tasks[worker]
+
+            for task in tasks:
+                reduced_tasks.append(task)
+                problem.used_problems[task] = False
+
+            problem.assigned_tasks[worker] = []
+
+    for task in reduced_tasks:
+
+        worker = random.randint(0, problem.worker_count)
+
+        #TODO assign tasks to new workers
+
+
+
+
+
+    
+
+
+
+# def shuffleProblems(problems : list[Problem], limit: int = 100) -> list[Problem]:
+
+#     problems.sort(lambda x : x.profit, reverse=True)
+
+#     for i in range(len(problems)):
+
+#         crossProblems(problems[i],problems[len(problems)-i])
+
+
+
+
+
+def generateSolutions(problem : Problem) -> list[list]:
+    
+    counter = 0
+    solutions = []
+
+    while counter < 10:
+        solution = generateRandom(problem.tasks, problem.worker_count, problem.deadline, 10)
+
+        if checkSolution(solution):
+            counter+=1
+            solutions.append(solution)
+
+
 def generateRandom(tasks: list[Task], worker_count: int, deadline: int, worker_tries: int) -> Problem:
     '''
     Generates random solution. For each task it tries to fit it randomly into any worker's timeline ``worker_tries`` times.
@@ -44,6 +100,7 @@ def generateRandom(tasks: list[Task], worker_count: int, deadline: int, worker_t
     problem = Problem(tasks, worker_count, deadline)
     matrix = problem.solution_matrix
     workers_timeline = np.zeros((worker_count, deadline))
+    assigned_tasks = [[] for _ in range(worker_count)]
 
     # for each task
     for task_idx, task in enumerate(tasks):
@@ -70,10 +127,13 @@ def generateRandom(tasks: list[Task], worker_count: int, deadline: int, worker_t
                     problem.used_problems[task_idx] = True
                     workers_timeline[worker, start : start + task.time] = 1
                     matrix[worker, task_idx, start] = 1
+                    assigned_tasks[worker].append(task_idx)
                     break_worker = True
                     problem.profit += task.profit
 
                     break
+
+                #TODO update matrix for problem
 
             # if we managed to fit the task we can go to next task
             if break_worker:
@@ -193,7 +253,7 @@ if __name__ == '__main__':
 
     tasks = generateTasks(task_count, day_deadline, 10)
 
-    problem = generateBasedOnMaxPay(copy.deepcopy(tasks), workers, day_deadline)
+    problem = generateBasedPPT(copy.deepcopy(tasks), workers, day_deadline)
     print(checkSolution(problem))
     print(problem.profit)
 
