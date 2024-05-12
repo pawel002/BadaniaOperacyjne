@@ -1,30 +1,6 @@
 import random
-import numpy as np
 import copy
-
-class Task:
-    def __init__(self, dealine: int, time: int, profit: int | float) -> None:
-        self.deadline = dealine
-        self.time = time
-        self.profit = profit
-
-    def __repr__(self) -> str:
-        return f"|{self.deadline}, {self.time}, {self.profit:.2f}|"
-
-class Problem:
-    def __init__(self, tasks: list[Task], worker_count: int, deadline: int) -> None:
-        self.tasks = tasks
-        self.worker_count = worker_count
-        self.deadline = deadline
-        self.used_problems = [False for _ in range(len(tasks))]
-        self.solution_matrix = np.zeros((worker_count, len(tasks), deadline))
-        self.profit = 0
-
-    def __repr__(self) -> str:
-        rep = f"{self.worker_count} workers \n {self.dealine} absolute dealine \n {len(tasks)} tasks \n"
-        for task in tasks:
-            rep += f"{str(task)}, "
-        return rep
+from classes import *
     
 def generateTasks(count:int, work_dealine: int, maxprofit: int | float) -> list[Task]:
     tasks = []
@@ -32,6 +8,15 @@ def generateTasks(count:int, work_dealine: int, maxprofit: int | float) -> list[
         deadline, profit = random.randint(1, work_dealine), random.random() * maxprofit
         time = max(deadline - random.randint(0, deadline), 1)
         tasks.append(Task(deadline, time, profit))
+
+    return tasks
+
+def generateRelaxedTasks(count: int, work_dealine: int, maxprofit: int | float) -> list[Task]:
+    tasks = []
+    for _ in range(count):
+        profit = random.random() * maxprofit
+        time = max(work_dealine - random.randint(0, work_dealine), 1)
+        tasks.append(Task(work_dealine, time, profit))
 
     return tasks
 
@@ -81,7 +66,7 @@ def generateRandom(tasks: list[Task], worker_count: int, deadline: int, worker_t
     
     return problem
 
-def generateBasedPPT(tasks: list[Task], worker_count: int, deadline: int):
+def generateBasedOnMaxPay(tasks: list[Task], worker_count: int, deadline: int):
     '''
     First sort the tasks using ``task.pay / task.time`` metric. After that iterate over tasks and
     try to fit the task to any worker starting from <dealine - time, deadline> and going down to
