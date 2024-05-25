@@ -2,6 +2,7 @@ import random
 import copy
 from classes import *
 import matplotlib.pyplot as plt
+from collections import Counter
 
 class RelaxedInstance:
     def __init__(self, task_distrib) -> None:
@@ -14,8 +15,23 @@ class RelaxedInstance:
                 profit += tasks[task_id].profit
 
         return profit
-        
+    
+    def checkValid(self):
+        m = Counter([x for row in self.task_distrib for x in row])
+        for key in m:
+            if m[key] != 1:
+                print(f"task {key} has {m[key]} occurances!")
+                return False
+            
+        return True
+    
+    def __repr__(self) -> str:
+        string = ''
+        for i, tasks in enumerate(self.task_distrib):
+            string += f"Worker {i+1}: {tasks} \n"
 
+        return string
+        
 def generateTasks(count: int, work_dealine: int, maxprofit: int | float) -> list[Task]:
     tasks = []
     for _ in range(count):
@@ -94,6 +110,7 @@ def genetic_func(instance1: RelaxedInstance, instance2: RelaxedInstance, tasks: 
             if random.random() < 0.5:
                 
                 if fit(worker_time1, new_instance1, task_idx):
+                    mark_used[task_idx] = 1
                     continue
                 
                 fit(worker_time2, new_instance2, task_idx)
@@ -101,6 +118,7 @@ def genetic_func(instance1: RelaxedInstance, instance2: RelaxedInstance, tasks: 
             else:
                 
                 if fit(worker_time2, new_instance2, task_idx):
+                    mark_used[task_idx] = 2
                     continue
 
                 fit(worker_time1, new_instance1, task_idx)
@@ -181,8 +199,8 @@ def evolutionAlg(population: list[RelaxedInstance], tasks: list[Task], iteration
 
         print(f"{iter_count} ITERATION. \n      average = {population_evaluation:.2f} \n      curbest = {cur_best_ev:.2f} \n      alltime = {best_profit:.2f}")
 
-        if population_evaluation >= best_profit * 0.99999:
-            break
+        # if population_evaluation >= best_profit * 0.99999:
+        #     break
 
     x_values = [i for i in range(len(best))]
     plt.plot(x_values, average, label="Average population profit")
@@ -259,7 +277,7 @@ if __name__ == "__main__":
     WORKER_COUNT = 10
     DEADLINE = 50
     TASK_COUNT = 500
-    MAX_ITER = 200
+    MAX_ITER = 2000
     DEBUG_LOG = False 
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
