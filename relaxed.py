@@ -1,8 +1,10 @@
 import random
 import copy
 from classes import *
+from visualize import *
+
 import matplotlib.pyplot as plt
-from collections import Counter
+
         
 def generateTasks(count: int, work_dealine: int, maxprofit: int | float) -> list[Task]:
     tasks = []
@@ -103,7 +105,7 @@ def mutate(instance: RelaxedInstance, tasks: list[Task], pop_prob: float):
     deadline = tasks[0].deadline
     worker_perm = [i for i in range(worker_count)]
     new_instance = [[x for x in row if random.random() < pop_prob] for row in instance.task_distrib]
-    worker_time = [sum([tasks[i].profit for i in row]) for row in new_instance]
+    worker_time = [sum([tasks[i].time for i in row]) for row in new_instance]
 
     def fit(time, instance, task_idx):
 
@@ -236,10 +238,6 @@ def calculate_profit_from_distribution(task_distribution, tasks):
 
     return profit
 
-def visualise(instances: list[RelaxedInstance]):
-    # jak sie komus chce to moze sprobowac
-    pass
-
 if __name__ == "__main__":
 
     random.seed(42)
@@ -249,10 +247,11 @@ if __name__ == "__main__":
     WORKER_COUNT = 10
     DEADLINE = 50
     TASK_COUNT = 500
-    MAX_ITER = 2000
+    MAX_ITER = 20
     DEBUG_LOG = False 
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
+    print(len(tasks))
 
     random.seed(123)
     np.random.seed(42134)
@@ -263,6 +262,16 @@ if __name__ == "__main__":
         population.append(RelaxedInstance(task_distrib))
 
     best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
-    # visualise(all_instances)
+    # i1, i2 = population[0], population[1]
+    # n1, n2 = genetic_func(i1, i2, tasks)
+    # n1 = mutate(n1, tasks, 0.2)
+
+    # for row in n1.task_distrib:
+    #     x = 0
+    #     for i in row:
+    #         x += tasks[i].time
+    #     print(x)
+
+    visualise(all_instances, tasks)
 
 

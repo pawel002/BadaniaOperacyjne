@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pygame
 import sys
 
-def visualise(instances: list[RelaxedInstance]):
+def visualise(instances: list[RelaxedInstance], tasks: list[Task]):
 
     pygame.init()
 
@@ -16,32 +16,38 @@ def visualise(instances: list[RelaxedInstance]):
     BLUE = (0, 0, 255)
 
     clock = pygame.time.Clock()
+    deadline = tasks[0].deadline
+    instance_idx = 0
 
     running = True
     while running:
-        # Handle events
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        # Update game state
-        # (Add game logic here)
+        instance = instances[instance_idx]
 
-        # Draw everything
-        screen.fill(WHITE)  # Fill the screen with white
+        screen.fill(WHITE)
 
-        # Draw a blue rectangle in the center of the screen
-        pygame.draw.rect(screen, BLUE, (screen_width // 2 - 50, screen_height // 2 - 50, 100, 100))
 
-        # Update the display
+        y = 10
+        rec_height = 20
+        for i, worker_tasks in enumerate(instance.task_distrib):
+            x = 10
+            for task_idx in worker_tasks:
+                width = int(tasks[task_idx].time / 50 * 750)
+                pygame.draw.rect(screen, BLUE, (x, y, width, rec_height), 2)
+                x += width
+
+            y += rec_height + 5
+
+        pygame.draw.line(screen, (0, 0, 0), (760, 0), (760, y + rec_height), 2)
+
         pygame.display.flip()
 
-        # Cap the frame rate at 60 FPS
         clock.tick(60)
 
-    # Quit Pygame
     pygame.quit()
     sys.exit()
-
-visualise([])
 
