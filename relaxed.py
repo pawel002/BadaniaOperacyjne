@@ -121,7 +121,7 @@ def mutate(instance: RelaxedInstance, tasks: list[Task], pop_prob: float):
 
     used = set(i for row in new_instance for i in row)
     unused = set(range(len(tasks))) - used
-    unused_profit = [(tasks[i].profit, i) for i in unused]
+    unused_profit = [(tasks[i].profit / tasks[i].time, i) for i in unused]
     unused_profit.sort(reverse=True)
 
     for _, task_id in unused_profit:
@@ -247,7 +247,7 @@ if __name__ == "__main__":
     WORKER_COUNT = 10
     DEADLINE = 50
     TASK_COUNT = 500
-    MAX_ITER = 20
+    MAX_ITER = 2000
     DEBUG_LOG = False 
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
@@ -262,16 +262,6 @@ if __name__ == "__main__":
         population.append(RelaxedInstance(task_distrib))
 
     best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
-    # i1, i2 = population[0], population[1]
-    # n1, n2 = genetic_func(i1, i2, tasks)
-    # n1 = mutate(n1, tasks, 0.2)
-
-    # for row in n1.task_distrib:
-    #     x = 0
-    #     for i in row:
-    #         x += tasks[i].time
-    #     print(x)
-
     visualise(all_instances, tasks)
 
 
