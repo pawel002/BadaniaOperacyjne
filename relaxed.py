@@ -126,6 +126,7 @@ def mutate(instance: RelaxedInstance, tasks: list[Task], pop_prob: float):
             
         return False
 
+
     used = set(i for row in new_instance for i in row)
     unused = set(range(len(tasks))) - used
     unused_profit = [(tasks[i].profit, i) for i in unused]
@@ -144,7 +145,6 @@ def evolutionAlg(population: list[RelaxedInstance], tasks: list[Task], iteration
     best_instance, best_profit = None, 0
     average, best, pop_best, pop_worst = [], [], [], []
 
-    # visualization ???
     instances = []
 
     for iter_count in range(iterations):
@@ -251,60 +251,21 @@ def visualise(instances: list[RelaxedInstance]):
     pass
 
 if __name__ == "__main__":
+
     random.seed(42)
     np.random.seed(42)
+
     BASE_POPULATION_SIZE = 40
     WORKER_COUNT = 10
     DEADLINE = 50
     TASK_COUNT = 500
     MAX_ITER = 200
     DEBUG_LOG = False 
-        
-    # tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
-    # # # task_distribution, profit = generateRandomSolution(tasks, WORKER_COUNT)
-    # base_population = []
-    # for _ in range(BASE_POPULATION_SIZE):
-    #     base_population.append(generateRandomSolution(tasks, WORKER_COUNT))
-
-    # print(*base_population)
-    # print('-'*15)
-
-    # best_profit = 0
-    # best_distribution = base_population[0]
-    # profit_list = []
-    # best_profit_list = []
-
-    # for iter in range(MAX_ITER):
-    #     current_population = evolution(base_population, tasks, DEADLINE)
-
-    #     for current_solution in current_population:
-    #         current_profit = calculate_profit_from_distribution(current_solution[0], tasks)
-
-    #         if current_profit > best_profit:
-    #             best_profit = current_profit
-    #             best_distribution = current_solution[0]
-
-
-    #         # print(f"Current best profit:\n{best_profit}")
-    #         if DEBUG_LOG:
-    #             print('-'*20)
-    #             print(f"Current iter:\n{iter}")
-    #             print(f"Current profit:\n {current_profit}")
-    #             # print(f"Population: {current_population}")
-
-    #     profit_list.append(current_profit)
-    #     best_profit_list.append(best_profit)
-
-    # x_values = [i for i in range(len(profit_list))]
-    # plt.plot(x_values, profit_list, label="Current Profit")
-    # plt.plot(x_values, best_profit_list, label="Current Best Profit")
-    # plt.xlabel("Iteration")
-    # plt.ylabel("Profit Score")
-    # plt.legend()
-    # plt.show()
-    # print(*best_distribution)
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
+
+    random.seed(123)
+    np.random.seed(42134)
 
     population = []
     for _ in range(BASE_POPULATION_SIZE):
@@ -312,6 +273,6 @@ if __name__ == "__main__":
         population.append(RelaxedInstance(task_distrib))
 
     best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
-    visualise(all_instances)
+    # visualise(all_instances)
 
 
