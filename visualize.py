@@ -43,3 +43,5 @@ def visualise(instances: list[RelaxedInstance]):
     pygame.quit()
     sys.exit()
 
+visualise([])
+

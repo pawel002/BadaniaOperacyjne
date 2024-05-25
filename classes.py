@@ -1,4 +1,5 @@
 import numpy as np
+from collections import Counter
 
 class Task:
     def __init__(self, dealine: int, time: int, profit: int | float) -> None:
