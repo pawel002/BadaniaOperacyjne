@@ -106,6 +106,7 @@ def mutate(instance: RelaxedInstance, tasks: list[Task], pop_prob: float):
     worker_perm = [i for i in range(worker_count)]
     new_instance = [[x for x in row if random.random() < pop_prob] for row in instance.task_distrib]
     worker_time = [sum([tasks[i].time for i in row]) for row in new_instance]
+    random.shuffle(worker_perm)
 
     def fit(time, instance, task_idx):
 
@@ -127,6 +128,7 @@ def mutate(instance: RelaxedInstance, tasks: list[Task], pop_prob: float):
     for _, task_id in unused_profit:
 
         fit(worker_time, new_instance, task_id)
+        random.shuffle(worker_perm)
 
     return RelaxedInstance(new_instance)
 
@@ -172,9 +174,6 @@ def evolutionAlg(population: list[RelaxedInstance], tasks: list[Task], iteration
         instances.append(copy.deepcopy(best_instance))
 
         print(f"{iter_count} ITERATION. \n      average = {population_evaluation:.2f} \n      curbest = {cur_best_ev:.2f} \n      alltime = {best_profit:.2f}")
-
-        # if population_evaluation >= best_profit * 0.99999:
-        #     break
 
     x_values = [i for i in range(len(best))]
     plt.plot(x_values, average, label="Average population profit")
@@ -247,19 +246,23 @@ if __name__ == "__main__":
     WORKER_COUNT = 10
     DEADLINE = 50
     TASK_COUNT = 500
-    MAX_ITER = 2000
+    MAX_ITER = 200
     DEBUG_LOG = False 
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
     print(len(tasks))
 
-    random.seed(123)
-    np.random.seed(42134)
-
     population = []
     for _ in range(BASE_POPULATION_SIZE):
         task_distrib, _, _ = generateRandomSolution(tasks, WORKER_COUNT)
         population.append(RelaxedInstance(task_distrib))
+
+    # x = population[0]
+    # print(x.evaluate(tasks))
+    # y = mutate(x, tasks, 0.2)
+    # print(y.evaluate(tasks))
+    # z = mutate(y, tasks, 0.2)
+    # print(z.evaluate(tasks))
 
     best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
     visualise(all_instances, tasks)
