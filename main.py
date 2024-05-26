@@ -1,31 +1,6 @@
 import random
-import numpy as np
 import copy
-
-class Task:
-    def __init__(self, dealine: int, time: int, profit: int | float) -> None:
-        self.deadline = dealine
-        self.time = time
-        self.profit = profit
-
-    def __repr__(self) -> str:
-        return f"|{self.deadline}, {self.time}, {self.profit:.2f}|"
-
-class Problem:
-    def __init__(self, tasks: list[Task], worker_count: int, deadline: int) -> None:
-        self.tasks = tasks
-        self.worker_count = worker_count
-        self.deadline = deadline
-        self.used_problems = [False for _ in range(len(tasks))]
-        self.solution_matrix = np.zeros((worker_count, len(tasks), deadline))
-        self.assigned_tasks =[[] for _ in range(worker_count)]
-        self.profit = 0
-
-    def __repr__(self) -> str:
-        rep = f"{self.worker_count} workers \n {self.dealine} absolute dealine \n {len(self.tasks)} tasks \n"
-        for task in self.tasks:
-            rep += f"{str(task)}, "
-        return rep
+from classes import *
     
 def generateTasks(count:int, work_dealine: int, maxprofit: int | float) -> list[Task]:
     tasks = []
@@ -36,60 +11,14 @@ def generateTasks(count:int, work_dealine: int, maxprofit: int | float) -> list[
 
     return tasks
 
-def evolveProblem(problem : Problem):   
+def generateRelaxedTasks(count: int, work_dealine: int, maxprofit: int | float) -> list[Task]:
+    tasks = []
+    for _ in range(count):
+        profit = random.random() * maxprofit
+        time = max(work_dealine - random.randint(0, work_dealine), 1)
+        tasks.append(Task(work_dealine, time, profit))
 
-    reduced_tasks = []
-
-    for worker in range(problem.worker_count):
-        roll = random.random()
-
-        if roll >= 0.5:
-            tasks = problem.assigned_tasks[worker]
-
-            for task in tasks:
-                reduced_tasks.append(task)
-                problem.used_problems[task] = False
-
-            problem.assigned_tasks[worker] = []
-
-    for task in reduced_tasks:
-
-        worker = random.randint(0, problem.worker_count)
-
-        #TODO assign tasks to new workers
-
-
-
-
-
-    
-
-
-
-# def shuffleProblems(problems : list[Problem], limit: int = 100) -> list[Problem]:
-
-#     problems.sort(lambda x : x.profit, reverse=True)
-
-#     for i in range(len(problems)):
-
-#         crossProblems(problems[i],problems[len(problems)-i])
-
-
-
-
-
-def generateSolutions(problem : Problem) -> list[list]:
-    
-    counter = 0
-    solutions = []
-
-    while counter < 10:
-        solution = generateRandom(problem.tasks, problem.worker_count, problem.deadline, 10)
-
-        if checkSolution(solution):
-            counter+=1
-            solutions.append(solution)
-
+    return tasks
 
 def generateRandom(tasks: list[Task], worker_count: int, deadline: int, worker_tries: int) -> Problem:
     '''
@@ -141,7 +70,7 @@ def generateRandom(tasks: list[Task], worker_count: int, deadline: int, worker_t
     
     return problem
 
-def generateBasedPPT(tasks: list[Task], worker_count: int, deadline: int):
+def generateBasedOnMaxPay(tasks: list[Task], worker_count: int, deadline: int):
     '''
     First sort the tasks using ``task.pay / task.time`` metric. After that iterate over tasks and
     try to fit the task to any worker starting from <dealine - time, deadline> and going down to
