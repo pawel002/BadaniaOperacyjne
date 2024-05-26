@@ -253,16 +253,12 @@ if __name__ == "__main__":
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
     print(len(tasks))
 
-    x = [i for i in range(10)]
-    random.shuffle(x)
-    print(*x)
-
     population = []
     for _ in range(BASE_POPULATION_SIZE):
         task_distrib, _, _ = generateRandomSolution(tasks, WORKER_COUNT)
         population.append(RelaxedInstance(task_distrib))
 
-    # best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
-    # visualise(all_instances, tasks)
+    best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
+    visualise(all_instances, tasks)
 
 
