@@ -123,7 +123,8 @@ def mutate(instance: RelaxedInstance, tasks: list[Task], pop_prob: float):
     used = set(i for row in new_instance for i in row)
     unused = set(range(len(tasks))) - used
     unused_profit = [(tasks[i].profit / tasks[i].time, i) for i in unused]
-    unused_profit.sort(reverse=True)
+    # unused_profit.sort(reverse=True)
+    random.shuffle(unused_profit)
 
     for _, task_id in unused_profit:
 
@@ -246,25 +247,22 @@ if __name__ == "__main__":
     WORKER_COUNT = 10
     DEADLINE = 50
     TASK_COUNT = 500
-    MAX_ITER = 200
+    MAX_ITER = 2000
     DEBUG_LOG = False 
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
     print(len(tasks))
+
+    x = [i for i in range(10)]
+    random.shuffle(x)
+    print(*x)
 
     population = []
     for _ in range(BASE_POPULATION_SIZE):
         task_distrib, _, _ = generateRandomSolution(tasks, WORKER_COUNT)
         population.append(RelaxedInstance(task_distrib))
 
-    # x = population[0]
-    # print(x.evaluate(tasks))
-    # y = mutate(x, tasks, 0.2)
-    # print(y.evaluate(tasks))
-    # z = mutate(y, tasks, 0.2)
-    # print(z.evaluate(tasks))
-
-    best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
-    visualise(all_instances, tasks)
+    # best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
+    # visualise(all_instances, tasks)
 
 
