@@ -173,7 +173,8 @@ def evolutionAlg(population: list[RelaxedInstance], tasks: list[Task], iteration
         pop_worst.append(population[-1].evaluate(tasks))
         instances.append(copy.deepcopy(best_instance))
 
-        print(f"{iter_count} ITERATION. \n      average = {population_evaluation:.2f} \n      curbest = {cur_best_ev:.2f} \n      alltime = {best_profit:.2f}")
+        if iter_count % 50 == 0:
+            print(f"{iter_count} ITERATION. \n      average = {population_evaluation:.2f} \n      curbest = {cur_best_ev:.2f} \n      alltime = {best_profit:.2f}")
 
     x_values = [i for i in range(len(best))]
     plt.plot(x_values, average, label="Average population profit")
