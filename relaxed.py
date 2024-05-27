@@ -250,7 +250,7 @@ if __name__ == "__main__":
     WORKER_COUNT = 10
     DEADLINE = 50
     TASK_COUNT = 500
-    MAX_ITER = 2000
+    MAX_ITER = 200
     DEBUG_LOG = False 
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
