@@ -132,7 +132,7 @@ def mutate(instance: RelaxedInstance, tasks: list[Task], pop_prob: float):
 
     return RelaxedInstance(new_instance)
 
-def evolutionAlg(population: list[RelaxedInstance], tasks: list[Task], iterations: int, mutation_prob: float):
+def evolutionAlg(population: list[RelaxedInstance], tasks: list[Task], iterations: int, mutation_prob: float, quiet: bool=False, plot: bool=True):
     
     population_size = len(population)
     population.sort(key=lambda x: x.evaluate(tasks), reverse=True)
@@ -173,17 +173,20 @@ def evolutionAlg(population: list[RelaxedInstance], tasks: list[Task], iteration
         pop_worst.append(population[-1].evaluate(tasks))
         instances.append(copy.deepcopy(best_instance))
 
-        print(f"{iter_count} ITERATION. \n      average = {population_evaluation:.2f} \n      curbest = {cur_best_ev:.2f} \n      alltime = {best_profit:.2f}")
+        if not quiet:
+            print(f"{iter_count} ITERATION. \n      average = {population_evaluation:.2f} \n      curbest = {cur_best_ev:.2f} \n      alltime = {best_profit:.2f}")
 
-    x_values = [i for i in range(len(best))]
-    plt.plot(x_values, average, label="Average population profit")
-    plt.plot(x_values, best, label="Best Profit")
-    plt.scatter(x_values, pop_best, label="Best Profit For Population", s=0.1)
-    plt.scatter(x_values, pop_worst, label="Worst Profit For Population", s=0.1)
-    plt.xlabel("Iteration")
-    plt.ylabel("Profit Score")
-    plt.legend()
-    plt.show()
+    if plot:
+        x_values = [i for i in range(len(best))]
+        plt.title(label="Traditional genetic algorithm")
+        plt.plot(x_values, average, label="Average population profit")
+        plt.plot(x_values, best, label="Best Profit")
+        plt.scatter(x_values, pop_best, label="Best Profit For Population", s=0.1)
+        plt.scatter(x_values, pop_worst, label="Worst Profit For Population", s=0.1)
+        plt.xlabel("Iteration")
+        plt.ylabel("Profit Score")
+        plt.legend()
+        plt.show()
 
     return best_instance, instances
 
