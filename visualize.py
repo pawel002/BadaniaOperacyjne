@@ -78,4 +78,3 @@ def visualise(instances: list[RelaxedInstance], tasks: list[Task]):
 
     pygame.quit()
     sys.exit()
-

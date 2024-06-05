@@ -2,6 +2,7 @@ import random
 import copy
 from classes import *
 from visualize import *
+from config import *
 
 import matplotlib.pyplot as plt
 
@@ -246,12 +247,6 @@ if __name__ == "__main__":
     random.seed(42)
     np.random.seed(42)
 
-    BASE_POPULATION_SIZE = 40
-    WORKER_COUNT = 10
-    DEADLINE = 50
-    TASK_COUNT = 500
-    MAX_ITER = 200
-    DEBUG_LOG = False 
 
     tasks = generateTasks(TASK_COUNT, DEADLINE, 10)
     print(len(tasks))
@@ -261,7 +256,7 @@ if __name__ == "__main__":
         task_distrib, _, _ = generateRandomSolution(tasks, WORKER_COUNT)
         population.append(RelaxedInstance(task_distrib))
 
-    best, all_instances = evolutionAlg(population, tasks, MAX_ITER, 0.2)
+    best, all_instances = evolutionAlg(population, tasks, MAX_ITER, MUTATION_PROB)
     visualise(all_instances, tasks)
 
 
