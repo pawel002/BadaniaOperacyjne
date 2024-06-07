@@ -1,6 +1,5 @@
 from classes import *
 import matplotlib.pyplot as plt
-import pygame
 import sys
 
 WHITE = (255, 255, 255)
@@ -13,14 +12,16 @@ font = None
 def linearColor(c1, c2, t):
     return tuple([int(x * t + y * (1-t)) for x,y in zip(c1,c2)])
 
-def draw_button(screen, rect, text):
-    pygame.draw.rect(screen, BLUE, rect)
-    text_surface = font.render(text, True, WHITE)
-    text_rect = text_surface.get_rect(center=rect.center)
-    screen.blit(text_surface, text_rect)
 
-def visualise(instances: list[RelaxedInstance], tasks: list[Task]):
+def visualise(instances: list[RelaxedInstance], tasks: list[Task], deadline: int):
+    import pygame
     global font
+    
+    def draw_button(screen, rect, text):
+        pygame.draw.rect(screen, BLUE, rect)
+        text_surface = font.render(text, True, WHITE)
+        text_rect = text_surface.get_rect(center=rect.center)
+        screen.blit(text_surface, text_rect)
     
     pygame.init()
 
@@ -36,7 +37,6 @@ def visualise(instances: list[RelaxedInstance], tasks: list[Task]):
     maxPPT = max([x.profit / x.time for x in tasks])
 
     clock = pygame.time.Clock()
-    deadline = tasks[0].deadline
     instance_idx = 0
     rec_height = screen_height * 0.7 / len(instances[0].task_distrib)
 
@@ -78,3 +78,12 @@ def visualise(instances: list[RelaxedInstance], tasks: list[Task]):
 
     pygame.quit()
     sys.exit()
+
+def plot_end(plot_dict, title):
+    plt.title(label=title)
+    plt.plot(plot_dict['x_values'], plot_dict['average'], label="Average Population Profit")
+    plt.plot(plot_dict['x_values'], plot_dict['best'], label="Best Profit So Far")
+    plt.xlabel("Iteration")
+    plt.ylabel("Profit")
+    plt.legend()
+    plt.show()
