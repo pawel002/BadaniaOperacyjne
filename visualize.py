@@ -78,3 +78,12 @@ def visualise(instances: list[RelaxedInstance], tasks: list[Task]):
 
     pygame.quit()
     sys.exit()
+
+def plot_end(plot_dict, title):
+    plt.title(label=title)
+    plt.plot(plot_dict['x_values'], plot_dict['average'], label="Average Population Profit")
+    plt.plot(plot_dict['x_values'], plot_dict['best'], label="Best Profit So Far")
+    plt.xlabel("Iteration")
+    plt.ylabel("Profit")
+    plt.legend()
+    plt.show()
