@@ -2,7 +2,8 @@ import random
 import copy
 import numpy as np
 from classes import *
-from visualize import *
+from matplotlib import pyplot as plt
+from visualize import plot_end
         
 def generateTasks(count: int, work_deadline: int, maxprofit: int | float) -> list[Task]:
     tasks = []
@@ -226,8 +227,8 @@ def evolution(population, tasks, deadline):
 
     return population
 
-from config import MUTATION_PROB, PATH, PLOT
-def run(algorithm, from_path = PATH, to_plot = PLOT, override_wc = False):
+from config import MUTATION_PROB, PATH, PLOT 
+def run(algorithm, from_path = PATH, to_plot = PLOT, override_wc = False, vis=False, quiet=True):
     """ 
     algorithm -> 1 - Basic Evolutionary Algorithm,
                  2 - Traditional Genetic Algorithm,
@@ -298,10 +299,11 @@ def run(algorithm, from_path = PATH, to_plot = PLOT, override_wc = False):
             plt.ylabel("Profit")
             plt.legend()
             plt.show()
-        print('--------------------------------')
-        print('Basic Evolutionary Algorithm:')
-        print(f'\tprofit = {f_profit:.2f}')
-        print(f'\ttime   = {f_time:.2f} s.')
+        if not quiet:
+            print('--------------------------------')
+            print('Basic Evolutionary Algorithm:')
+            print(f'\tprofit = {f_profit:.2f}')
+            print(f'\ttime   = {f_time:.2f} s.')
 
     if algorithm == 2 or algorithm == 3:
         from config import MUTATION_PROB 
@@ -313,9 +315,14 @@ def run(algorithm, from_path = PATH, to_plot = PLOT, override_wc = False):
 
         if to_plot:
             plot_end(plot_data, "Traditional Genetic Algorithm")
-        print('Traditional Genetic Algorithm:')
-        print(f'\tprofit = {s_profit:.2f}')
-        print(f'\ttime   = {s_time:.2f} s.')
+        if not quiet:
+            print('Traditional Genetic Algorithm:')
+            print(f'\tprofit = {s_profit:.2f}')
+            print(f'\ttime   = {s_time:.2f} s.')
+
+        if vis:
+            from visualize import visualise
+            visualise(all_instances, tasks, DEADLINE_true)
 
     return (f_profit, f_time), (s_profit, s_time)
 
